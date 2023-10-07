@@ -89,6 +89,26 @@ jobs:
         with:
           parallel-finished: true
 
+  publish-pypi-test:
+    name: Publish To PyPI Test
+    environment: dev
+    if: ${{ github.repository == 'vacanza/python-holidays' && github.event_name == 'push' }}
+    needs:
+      - build
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Package Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - name: Publish Package Distributions To PyPI Test
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
